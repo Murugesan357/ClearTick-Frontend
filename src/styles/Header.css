@@ -1,0 +1,76 @@
+.header {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo h2 {
+  background: linear-gradient(135deg, #ffffff, #f8f9fa, #e0e7ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.logo-img{
+  width: 50px;
+  height: 50px;
+  ;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.nav-link {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  backdrop-filter: blur(5px);
+}
+
+.nav-link:hover {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+}
+
+.nav-link.active {
+  background: linear-gradient(135deg, #5c6de3, #6c3ea0);
+  color: #fff;
+}
+
+
+.nav-link.logout {
+  background: #e74c3c;
+  color: white;
+}
+
+.nav-link.logout:hover {
+  background: #c0392b;
+}

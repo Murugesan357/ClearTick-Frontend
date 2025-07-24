@@ -1,0 +1,146 @@
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.profile-header h1 {
+  color: white;
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.profile-container {
+  display: flex;
+  justify-content: center;
+}
+
+.profile-card {
+  background: white;
+  padding: 1.5rem 2rem; /* reduced */
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px; /* reduced */
+}
+
+.profile-avatar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.avatar-circle {
+  width: 60px; 
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.8rem; /* reduced */
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.profile-info {
+  text-align: center;
+}
+
+.info-section {
+  margin-bottom: 1.2rem; /* reduced */
+  padding-bottom: 0.8rem; /* reduced */
+  border-bottom: 1px solid #eee;
+}
+
+.info-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.info-section h2 {
+  margin: 0 0 0.4rem 0;
+  color: #333;
+  font-size: 1.3rem; /* reduced */
+}
+
+.info-section h3 {
+  margin: 0 0 0.8rem 0;
+  color: #555;
+  font-size: 1rem; /* reduced */
+  text-align: left;
+}
+
+.username {
+  color: #667eea;
+  font-weight: 500;
+  margin: 0 0 0.4rem 0;
+}
+
+.email {
+  color: #666;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.bio {
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem; /* reduced */
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.info-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.info-grid strong {
+  color: #333;
+  font-weight: 600;
+}
+
+.info-grid span {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.profile-form {
+  text-align: left;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.1rem;
+  color: white;
+  padding: 2rem;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+}

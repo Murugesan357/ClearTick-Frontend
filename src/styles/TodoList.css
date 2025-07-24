@@ -1,0 +1,308 @@
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  box-sizing: border-box;
+}
+
+.main-content {
+  flex-grow: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Todos header */
+.todos-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.todos-header h1 {
+  color: white;
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.todo-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.todo-form h3 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.todos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.todo-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-left: 3px solid #667eea;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.todo-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.todo-card.completed {
+  border-left-color: #27ae60;
+  opacity: 0.8;
+}
+
+.todo-card.completed .todo-title {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.todo-content {
+  margin-bottom: 1rem;
+}
+
+.todo-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.todo-title:hover {
+  color: #667eea;
+}
+
+.todo-description {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.todo-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.todo-actions .btn {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+/* New styles for edit form */
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.edit-form .form-input,
+.edit-form textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  color: #333;
+}
+
+.edit-form .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.edit-form .btn {
+  padding: 6px 14px;
+  font-size: 0.9rem;
+}
+
+/* Empty and loading states */
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  color: #666;
+}
+
+.empty-state h3 {
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: white;
+  padding: 3rem;
+}
+
+/* Modal overlay for edit form */
+.edit-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Modal container */
+.edit-modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: fadeInScale 0.2s ease;
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.edit-modal h3 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+}
+
+.edit-modal .form-input,
+.edit-modal textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  color: #333;
+}
+
+.edit-modal .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  border-radius: 6px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.btn-success {
+  background: #27ae60;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #1e8c4d;
+}
+
+.btn-secondary {
+  background: #95a5a6;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #7f8c8d;
+}
+
+.btn-danger {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #c0392b;
+}
+
+.btn-primary {
+  background: #ffda77;
+  color: #764ba2;
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background: #ffd34d;
+  color: #5a2b82;
+}
+
+.todo-due-date {
+  font-size: 0.85rem;
+  color: #e67e22;
+  margin-top: 0.3rem;
+}
+
+.form-input[type="date"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: #333;
+  background-color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.form-input[type="date"]:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+/* Due date display inside todo card */
+.todo-due-date {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

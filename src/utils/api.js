@@ -55,10 +55,10 @@ export const getTodos = async (userId) => {
   return apiCall(`/todos/user?userId=${userId}`,{},true);
 };
 
-export const createTodo = async (title, description = '', userId) => {
+export const createTodo = async (title, description = '', userId, dueDate) => {
   return apiCall('/todos', {
     method: 'POST',
-    body: JSON.stringify({ title, description, userId }),
+    body: JSON.stringify({ title, description, userId, dueDate }),
   }, true);
 };
 

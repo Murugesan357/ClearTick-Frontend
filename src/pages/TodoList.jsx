@@ -40,7 +40,7 @@ const TodoList = () => {
         newTodo.title,
         newTodo.description,
         user.id,
-        newTodo.dueDate
+        newTodo.dueDate ? newTodo.dueDate : new Date().toISOString().split("T")[0]
       );
       setTodos([...todos, data]);
       setNewTodo({ title: '', description: '', dueDate: '' });

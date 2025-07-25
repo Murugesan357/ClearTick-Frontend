@@ -46,6 +46,7 @@ const Profile = () => {
     try {
       const data = await updateProfile(formData,user.id);
       setProfile(data);
+      localStorage.setItem('user', data ? JSON.stringify(data) : '')
       setEditing(false);
       setSuccess('Profile updated successfully!');
       setTimeout(() => setSuccess(''), 3000);

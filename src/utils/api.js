@@ -36,7 +36,7 @@ export const apiCall = async (endpoint, options = {}, isAuthenticate) => {
 
 // Auth API calls
 export const loginUser = async (email, password) => {
-  return apiCall('/users/login', {
+  return apiCall('/api/users/login', {
     method: 'POST',
     body: JSON.stringify({ email, password }),
   });
@@ -44,7 +44,7 @@ export const loginUser = async (email, password) => {
 
 export const signupUser = async (firstName, lastName, email, password) => {
   console.log(firstName, lastName, email, password)
-  return apiCall('/users/signup', {
+  return apiCall('/api/users/signup', {
     method: 'POST',
     body: JSON.stringify({ firstName, lastName, email, password }),
   });
@@ -52,36 +52,37 @@ export const signupUser = async (firstName, lastName, email, password) => {
 
 // Todo API calls
 export const getTodos = async (userId) => {
-  return apiCall(`/todos/user?userId=${userId}`,{},true);
+  return apiCall(`/api/todos/user?userId=${userId}`,{},true);
 };
 
 export const createTodo = async (title, description = '', userId, dueDate) => {
-  return apiCall('/todos', {
+  console.log(dueDate)
+  return apiCall('/api/todos', {
     method: 'POST',
     body: JSON.stringify({ title, description, userId, dueDate }),
   }, true);
 };
 
 export const updateTodo = async (id, updates) => {
-  return apiCall(`/todos/${id}`, {
+  return apiCall(`/api/todos/${id}`, {
     method: 'PUT',
     body: JSON.stringify(updates),
   },true);
 };
 
 export const deleteTodo = async (id) => {
-  return apiCall(`/todos/${id}`, {
+  return apiCall(`/api/todos/${id}`, {
     method: 'DELETE',
   },true);
 };
 
 // Profile API calls
 export const getProfile = async (id) => {
-  return apiCall(`/users/${id}`, {}, true);
+  return apiCall(`/api/users/${id}`, {}, true);
 };
 
 export const updateProfile = async (updates, id) => {
-  return apiCall(`/users/${id}`, {
+  return apiCall(`/api/users/${id}`, {
     method: 'PUT',
     body: JSON.stringify(updates),
   }, true);

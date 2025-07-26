@@ -12,17 +12,17 @@ const TodoList = () => {
   const [editingTodo, setEditingTodo] = useState(null);
   const [editForm, setEditForm] = useState({ title: '', description: '', dueDate: '' });
   const [showAddForm, setShowAddForm] = useState(false);
-
+  const [sortOption, setSortOption] = useState('createdAt');
   const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
     fetchTodos();
-  }, []);
+  }, [sortOption]);
 
   const fetchTodos = async () => {
     try {
       setLoading(true);
-      const data = await getTodos(user?.id);
+      const data = await getTodos(user?.id, sortOption); // pass sortOption as query param
       setTodos(data || []);
     } catch (err) {
       setError(err.message);
@@ -40,9 +40,9 @@ const TodoList = () => {
         newTodo.title,
         newTodo.description,
         user.id,
-        newTodo.dueDate ? newTodo.dueDate : new Date().toISOString().split("T")[0]
+        newTodo.dueDate || new Date().toISOString().split('T')[0]
       );
-      setTodos([...todos, data]);
+      fetchTodos();
       setNewTodo({ title: '', description: '', dueDate: '' });
       setShowAddForm(false);
       setSuccess('Todo added successfully!');
@@ -64,8 +64,8 @@ const TodoList = () => {
 
   const handleUpdateTodo = async (id) => {
     try {
-      const data = await updateTodo(id, editForm);
-      setTodos(todos.map((todo) => (todo.id === id ? data : todo)));
+      await updateTodo(id, editForm);
+      fetchTodos(); // refresh sorted list
       setEditingTodo(null);
       setEditForm({ title: '', description: '', dueDate: '' });
       setSuccess('Todo updated successfully!');
@@ -81,7 +81,7 @@ const TodoList = () => {
 
     try {
       await deleteTodo(id);
-      setTodos(todos.filter((todo) => todo.id !== id));
+      fetchTodos(); // refresh list
       setSuccess('Todo deleted successfully!');
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
@@ -92,14 +92,10 @@ const TodoList = () => {
 
   const handleToggleComplete = async (todo) => {
     await updateTodo(todo.id, { isCompleted: !todo.isCompleted });
-    setTodos(
-      todos.map((t) =>
-        t.id === todo.id ? { ...t, isCompleted: !t.isCompleted } : t
-      )
-    );
+    fetchTodos();
   };
 
-  // Function to get due date color
+  // Get due date color
   const getDueDateColor = (dueDateString) => {
     if (!dueDateString) return '#666';
     const today = new Date();
@@ -108,9 +104,9 @@ const TodoList = () => {
     const diffTime = dueDate.getTime() - today.getTime();
     const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
-    if (diffDays < 0) return 'red';        // overdue
-    if (diffDays > 2) return 'green';     // less than or equal to 2 days
-    if (diffDays <= 2) return 'orange';     // more than 2 days
+    if (diffDays < 0) return 'red';      // overdue
+    if (diffDays > 2) return 'green';    // more than 2 days
+    if (diffDays <= 2) return 'orange';  // within 2 days
   };
 
   if (loading) {
@@ -133,17 +129,32 @@ const TodoList = () => {
         <div className="container">
           <div className="todos-header">
             <h1>{`Hello, ${user?.firstName ?? 'user'}`}</h1>
-            <button
-              className="btn btn-primary"
-              onClick={() => setShowAddForm(!showAddForm)}
-            >
-              {showAddForm ? 'Cancel' : 'Add Todo'}
-            </button>
+            <div className="header-right">
+              <div className="sort-container">
+                <label className="sort-label" htmlFor="sort">Sort By:</label>
+                <select
+                  id="sort"
+                  className="sort-select"
+                  value={sortOption}
+                  onChange={(e) => setSortOption(e.target.value)}
+                >
+                  <option value="createdAt">Created At</option>
+                  <option value="dueDate">Due Date</option>
+                </select>
+              </div>
+              <button
+                className="btn btn-primary"
+                onClick={() => setShowAddForm(!showAddForm)}
+              >
+                {showAddForm ? 'Cancel' : 'Add Todo'}
+              </button>
+            </div>
           </div>
 
           {error && <div className="alert alert-error">{error}</div>}
           {success && <div className="alert alert-success">{success}</div>}
 
+          {/* Add Todo Form */}
           {showAddForm && (
             <div className="todo-form">
               <h3>Add New Todo</h3>
@@ -179,7 +190,7 @@ const TodoList = () => {
                     onChange={(e) =>
                       setNewTodo({ ...newTodo, dueDate: e.target.value })
                     }
-                    min={new Date().toISOString().split("T")[0]}
+                    min={new Date().toISOString().split('T')[0]}
                   />
                 </div>
                 <div className="form-actions">
@@ -212,9 +223,9 @@ const TodoList = () => {
                   style={{
                     borderLeftColor: `${
                       todo.isCompleted
-                        ? '#666' // same as description color for completed tasks
+                        ? '#666'
                         : getDueDateColor(todo.dueDate || todo.due_date)
-                    } `
+                    }`,
                   }}
                 >
                   <div className="todo-content">
@@ -228,7 +239,7 @@ const TodoList = () => {
                         style={{
                           color: todo?.isCompleted
                             ? '#666'
-                            : getDueDateColor(todo?.dueDate || todo?.due_date)
+                            : getDueDateColor(todo?.dueDate || todo?.due_date),
                         }}
                       >
                         Due: {new Date(todo?.dueDate || todo?.due_date).toLocaleDateString()}
@@ -300,7 +311,7 @@ const TodoList = () => {
               onChange={(e) =>
                 setEditForm({ ...editForm, dueDate: e.target.value })
               }
-              min={new Date().toISOString().split("T")[0]}
+              min={new Date().toISOString().split('T')[0]}
             />
             <div className="form-actions">
               <button

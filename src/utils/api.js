@@ -51,8 +51,8 @@ export const signupUser = async (firstName, lastName, email, password) => {
 };
 
 // Todo API calls
-export const getTodos = async (userId) => {
-  return apiCall(`/api/todos/user?userId=${userId}`,{},true);
+export const getTodos = async (userId, sortBy) => {
+  return apiCall(`/api/todos/user?userId=${userId}&sortBy=${sortBy}`,{},true);
 };
 
 export const createTodo = async (title, description = '', userId, dueDate) => {

@@ -14,7 +14,6 @@
   padding: 1rem;
 }
 
-/* Todos header */
 .todos-header {
   display: flex;
   justify-content: space-between;
@@ -30,28 +29,70 @@
 }
 
 .todo-form {
-  background: white;
+  width: 100%;
+  background: #ffffff;
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  animation: fadeIn 0.3s ease-in-out;
 }
 
 .todo-form h3 {
-  margin-bottom: 1.5rem;
+  margin: 0;
   color: #333;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
-.form-actions {
+.todo-form .form-input,
+.todo-form textarea {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin: 0.3rem 0rem;
+  font-size: 1rem;
+  color: #333;
+  transition: border-color 0.2s ease;
+  width: 100%;
+}
+
+.todo-form .form-input:focus,
+.todo-form textarea:focus {
+  outline: none;
+  border-color: #27ae60;
+  box-shadow: 0 0 5px rgba(39, 174, 96, 0.3);
+}
+
+.todo-form .form-actions {
   display: flex;
-  gap: 1rem;
   justify-content: flex-end;
+  gap: 0.75rem;
+  margin: 0.5rem 0rem
 }
 
-.todos-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+
+.todos-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-left: 2rem;
+  padding-left: 2rem;
+}
+
+.todos-list::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: #ddd;
+  border-radius: 2px;
 }
 
 .todo-card {
@@ -59,9 +100,11 @@
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  border-left: 3px solid #667eea;
   transition: all 0.3s ease;
   position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .todo-card:hover {
@@ -69,8 +112,53 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
+.todo-card::before {
+  content: "";
+  position: absolute;
+  left: -2.4rem;
+  top: 1rem;
+  width: 12px;
+  height: 12px;
+  background: #3498db;
+  border: 3px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px #ddd;
+  transition: transform 0.2s ease;
+  z-index: 2;
+}
+
+.todo-card::after {
+  content: "";
+  position: absolute;
+  left: -2rem;
+  top: 1.3rem;
+  width: 2rem;
+  height: 2px;
+  background: #ddd;
+  z-index: 1;
+}
+
+.todo-card:hover::before {
+  transform: scale(1.2);
+}
+
+.todo-card.completed::before {
+  background: #27ae60;
+}
+
+.todo-card.overdue::before {
+  background: #e74c3c;
+}
+
+.todo-card.due-soon::before {
+  background: #f39c12;
+}
+
+.todo-card.due-later::before {
+  background: #27ae60;
+}
+
 .todo-card.completed {
-  border-left-color: #27ae60;
   opacity: 0.8;
 }
 
@@ -80,7 +168,8 @@
 }
 
 .todo-content {
-  margin-bottom: 1rem;
+  flex-grow: 1;
+  margin-right: 1rem;
 }
 
 .todo-title {
@@ -106,7 +195,7 @@
 .todo-actions {
   display: flex;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
 .todo-actions .btn {
@@ -114,35 +203,6 @@
   font-size: 12px;
 }
 
-/* New styles for edit form */
-.edit-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.edit-form .form-input,
-.edit-form textarea {
-  width: 100%;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  color: #333;
-}
-
-.edit-form .form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-}
-
-.edit-form .btn {
-  padding: 6px 14px;
-  font-size: 0.9rem;
-}
-
-/* Empty and loading states */
 .empty-state {
   grid-column: 1 / -1;
   text-align: center;
@@ -163,6 +223,44 @@
   color: white;
   padding: 3rem;
 }
+
+.edit-form {
+  width: 100%; 
+  max-width: none;
+  background: #ffffff;
+  border-left: 4px solid #667eea;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.edit-form .form-input,
+.edit-form textarea {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 0.8rem;
+  font-size: 1rem;
+  color: #333;
+  transition: border-color 0.2s ease;
+}
+
+.edit-form .form-input:focus,
+.edit-form textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+}
+
+.edit-form .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
 
 /* Modal overlay for edit form */
 .edit-modal-overlay {
@@ -310,7 +408,7 @@
 .header-right {
   display: flex;
   align-items: center;
-  gap: 1rem; /* space between dropdown and button */
+  gap: 1rem;
 }
 
 .sort-container {
@@ -340,5 +438,29 @@
   background-size: 1rem;
 }
 
+.todo-due-date {
+  margin: 0.5rem 0 0;
+  font-size: 0.8rem;
+  font-style: italic;
+  font-weight: 500;
+}
 
+/* Due date text colors */
+/* Due date text colors */
+.todo-card.completed .todo-due-date,
+.todo-card.completed .todo-description {
+  color: #888; /* green for completed */
+}
+
+.todo-card.overdue .todo-due-date {
+  color: #e74c3c; /* red for overdue */
+}
+
+.todo-card.due-soon .todo-due-date {
+  color: #f39c12; /* orange for due soon */
+}
+
+.todo-card.due-later .todo-due-date {
+  color: #27ae60; /* green for due later */
+}
 

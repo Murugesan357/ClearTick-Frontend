@@ -22,7 +22,7 @@ const TodoList = () => {
   const fetchTodos = async () => {
     try {
       setLoading(true);
-      const data = await getTodos(user?.id, sortOption); // pass sortOption as query param
+      const data = await getTodos(user?.id, sortOption);
       setTodos(data || []);
     } catch (err) {
       setError(err.message);
@@ -36,7 +36,7 @@ const TodoList = () => {
     if (!newTodo.title.trim()) return;
 
     try {
-      const data = await createTodo(
+      await createTodo(
         newTodo.title,
         newTodo.description,
         user.id,
@@ -65,7 +65,7 @@ const TodoList = () => {
   const handleUpdateTodo = async (id) => {
     try {
       await updateTodo(id, editForm);
-      fetchTodos(); // refresh sorted list
+      fetchTodos();
       setEditingTodo(null);
       setEditForm({ title: '', description: '', dueDate: '' });
       setSuccess('Todo updated successfully!');
@@ -81,7 +81,7 @@ const TodoList = () => {
 
     try {
       await deleteTodo(id);
-      fetchTodos(); // refresh list
+      fetchTodos();
       setSuccess('Todo deleted successfully!');
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
@@ -95,28 +95,24 @@ const TodoList = () => {
     fetchTodos();
   };
 
-  // Get due date color
-  const getDueDateColor = (dueDateString) => {
-    if (!dueDateString) return '#666';
+  // Determine status class for dot color
+  const getStatusClass = (todo) => {
+    if (todo.isCompleted) return 'completed';
+    const dueDate = new Date(todo.dueDate || todo.due_date);
     const today = new Date();
-    const dueDate = new Date(dueDateString);
-
-    const diffTime = dueDate.getTime() - today.getTime();
-    const diffDays = diffTime / (1000 * 60 * 60 * 24);
-
-    if (diffDays < 0) return 'red';      // overdue
-    if (diffDays > 2) return 'green';    // more than 2 days
-    if (diffDays <= 2) return 'orange';  // within 2 days
+    const diff = (dueDate - today) / (1000 * 60 * 60 * 24);
+    if (diff < 0) return 'overdue';
+    if (diff <= 2) return 'due-soon';
+    return 'due-later';
   };
+
 
   if (loading) {
     return (
       <div className="page-container">
         <Header />
         <div className="main-content">
-          <div className="container">
-            <div className="loading">Loading your todos...</div>
-          </div>
+          <div className="loading">Loading your todos...</div>
         </div>
       </div>
     );
@@ -126,213 +122,137 @@ const TodoList = () => {
     <div className="page-container">
       <Header />
       <div className="main-content">
-        <div className="container">
-          <div className="todos-header">
-            <h1>{`Hello, ${user?.firstName ?? 'user'}`}</h1>
-            <div className="header-right">
-              <div className="sort-container">
-                <label className="sort-label" htmlFor="sort">Sort By:</label>
-                <select
-                  id="sort"
-                  className="sort-select"
-                  value={sortOption}
-                  onChange={(e) => setSortOption(e.target.value)}
-                >
-                  <option value="createdAt">Created At</option>
-                  <option value="dueDate">Due Date</option>
-                </select>
-              </div>
-              <button
-                className="btn btn-primary"
-                onClick={() => setShowAddForm(!showAddForm)}
+        <div className="todos-header">
+          <h1>{`Hello, ${user?.firstName ?? 'user'}`}</h1>
+          <div className="header-right">
+            <div className="sort-container">
+              <label className="sort-label" htmlFor="sort">Sort By:</label>
+              <select
+                id="sort"
+                className="sort-select"
+                value={sortOption}
+                onChange={(e) => setSortOption(e.target.value)}
               >
-                {showAddForm ? 'Cancel' : 'Add Todo'}
-              </button>
+                <option value="createdAt">Created At</option>
+                <option value="dueDate">Due Date</option>
+              </select>
             </div>
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowAddForm(!showAddForm)}
+            >
+              {showAddForm ? 'Cancel' : 'Add Todo'}
+            </button>
           </div>
+        </div>
 
-          {error && <div className="alert alert-error">{error}</div>}
-          {success && <div className="alert alert-success">{success}</div>}
+        {error && <div className="alert alert-error">{error}</div>}
+        {success && <div className="alert alert-success">{success}</div>}
 
-          {/* Add Todo Form */}
-          {showAddForm && (
-            <div className="todo-form">
-              <h3>Add New Todo</h3>
-              <form onSubmit={handleAddTodo}>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    className="form-input"
-                    placeholder="Todo title"
-                    value={newTodo.title}
-                    onChange={(e) =>
-                      setNewTodo({ ...newTodo, title: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <textarea
-                    className="form-input"
-                    placeholder="Description (optional)"
-                    rows="3"
-                    value={newTodo.description}
-                    onChange={(e) =>
-                      setNewTodo({ ...newTodo, description: e.target.value })
-                    }
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="date"
-                    className="form-input"
-                    value={newTodo.dueDate}
-                    onChange={(e) =>
-                      setNewTodo({ ...newTodo, dueDate: e.target.value })
-                    }
-                    min={new Date().toISOString().split('T')[0]}
-                  />
-                </div>
-                <div className="form-actions">
-                  <button type="submit" className="btn btn-success">
-                    Add Todo
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => setShowAddForm(false)}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-
-          <div className="todos-grid">
-            {todos.length === 0 ? (
-              <div className="empty-state">
-                <h3>No todos yet!</h3>
-                <p>Click "Add Todo" to create your first task.</p>
-              </div>
-            ) : (
-              todos.map((todo) => (
-                <div
-                  key={todo.id}
-                  className={`todo-card ${todo.isCompleted ? 'completed' : ''}`}
-                  style={{
-                    borderLeftColor: `${
-                      todo.isCompleted
-                        ? '#666'
-                        : getDueDateColor(todo.dueDate || todo.due_date)
-                    }`,
-                  }}
+        {showAddForm && (
+          <div className="todo-form">
+            <h3>Add New Todo</h3>
+            <form onSubmit={handleAddTodo}>
+              <input
+                type="text"
+                className="form-input"
+                placeholder="Todo title"
+                value={newTodo.title}
+                onChange={(e) => setNewTodo({ ...newTodo, title: e.target.value })}
+                required
+              />
+              <textarea
+                className="form-input"
+                placeholder="Description (optional)"
+                rows="3"
+                value={newTodo.description}
+                onChange={(e) => setNewTodo({ ...newTodo, description: e.target.value })}
+              />
+              <input
+                type="date"
+                className="form-input"
+                value={newTodo.dueDate}
+                onChange={(e) => setNewTodo({ ...newTodo, dueDate: e.target.value })}
+                min={new Date().toISOString().split('T')[0]}
+              />
+              <div className="form-actions">
+                <button type="submit" className="btn btn-success">Add Todo</button>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowAddForm(false)}
                 >
-                  <div className="todo-content">
-                    <h3 className="todo-title">{todo?.title}</h3>
-                    {todo.description && (
-                      <p className="todo-description">{todo?.description}</p>
-                    )}
-                    {(todo?.dueDate || todo?.due_date) && (
-                      <p
-                        className="todo-due-date"
-                        style={{
-                          color: todo?.isCompleted
-                            ? '#666'
-                            : getDueDateColor(todo?.dueDate || todo?.due_date),
-                        }}
-                      >
-                        Due: {new Date(todo?.dueDate || todo?.due_date).toLocaleDateString()}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="todo-actions">
-                    <button
-                      className={`btn ${todo.isCompleted ? 'btn-secondary' : 'btn-success'}`}
-                      onClick={() => handleToggleComplete(todo)}
-                    >
-                      {todo.isCompleted ? 'Undo' : 'Complete'}
-                    </button>
-                    <button
-                      className="btn btn-secondary"
-                      onClick={() => handleStartEditing(todo)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleDeleteTodo(todo.id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
+        )}
+
+        <div className="todos-list">
+          {todos.length === 0 ? (
+            <div className="empty-state">
+              <h3>No todos yet!</h3>
+              <p>Click "Add Todo" to create your first task.</p>
+            </div>
+          ) : (
+            todos.map((todo) => (
+              <div key={todo.id} className={`todo-card ${getStatusClass(todo)}`}>
+                {editingTodo === todo.id ? (
+                  <div className="edit-form">
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={editForm.title}
+                      onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                      required
+                    />
+                    <textarea
+                      className="form-input"
+                      rows="3"
+                      value={editForm.description}
+                      onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                    />
+                    <input
+                      type="date"
+                      className="form-input"
+                      value={editForm.dueDate}
+                      onChange={(e) => setEditForm({ ...editForm, dueDate: e.target.value })}
+                    />
+                    <div className="form-actions">
+                      <button className="btn btn-success" onClick={() => handleUpdateTodo(todo.id)}>Save</button>
+                      <button className="btn btn-secondary" onClick={() => setEditingTodo(null)}>Cancel</button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="todo-content">
+                      <h3 className="todo-title">{todo.title}</h3>
+                      {todo.description && <p className="todo-description">{todo.description}</p>}
+                      {(todo.dueDate || todo.due_date) && (
+                        <p className="todo-due-date">
+                          Due: {new Date(todo.dueDate || todo.due_date).toLocaleDateString()}
+                        </p>
+                      )}
+                    </div>
+                    <div className="todo-actions">
+                      <button
+                        className={`btn ${todo.isCompleted ? 'btn-secondary' : 'btn-success'}`}
+                        onClick={() => handleToggleComplete(todo)}
+                      >
+                        {todo.isCompleted ? 'Undo' : 'Complete'}
+                      </button>
+                      <button className="btn btn-secondary" onClick={() => handleStartEditing(todo)}>Edit</button>
+                      <button className="btn btn-danger" onClick={() => handleDeleteTodo(todo.id)}>Delete</button>
+                    </div>
+                  </>
+                )}
+              </div>
+            ))
+
+          )}
         </div>
       </div>
-
-      {/* Edit Modal */}
-      {editingTodo && (
-        <div
-          className="edit-modal-overlay"
-          onClick={() => {
-            setEditingTodo(null);
-            setEditForm({ title: '', description: '', dueDate: '' });
-          }}
-        >
-          <div
-            className="edit-modal"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3>Edit Todo</h3>
-            <input
-              type="text"
-              className="form-input"
-              value={editForm.title}
-              onChange={(e) =>
-                setEditForm({ ...editForm, title: e.target.value })
-              }
-            />
-            <textarea
-              className="form-input"
-              rows="3"
-              value={editForm.description}
-              onChange={(e) =>
-                setEditForm({ ...editForm, description: e.target.value })
-              }
-            />
-            <input
-              type="date"
-              className="form-input"
-              value={editForm.dueDate}
-              onChange={(e) =>
-                setEditForm({ ...editForm, dueDate: e.target.value })
-              }
-              min={new Date().toISOString().split('T')[0]}
-            />
-            <div className="form-actions">
-              <button
-                className="btn btn-success"
-                onClick={() => handleUpdateTodo(editingTodo)}
-              >
-                Update
-              </button>
-              <button
-                className="btn btn-secondary"
-                onClick={() => {
-                  setEditingTodo(null);
-                  setEditForm({ title: '', description: '', dueDate: '' });
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

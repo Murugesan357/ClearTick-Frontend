@@ -71,8 +71,16 @@
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
-  margin: 0.5rem 0rem
+  margin: 0.5rem 0;
 }
+
+.todo-form .form-actions .btn {
+  flex: 0 0 auto;
+  min-width: 100px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+}
+
 
 
 .todos-list {
@@ -225,10 +233,9 @@
 }
 
 .edit-form {
-  width: 100%; 
-  max-width: none;
+  width: 100%;
   background: #ffffff;
-  border-left: 4px solid #667eea;
+  border-left: 2px solid transparent;
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -237,6 +244,24 @@
   gap: 1rem;
   animation: fadeIn 0.2s ease-in-out;
 }
+
+/* Border colors based on due status */
+.edit-form.overdue {
+  border-left-color: #e74c3c; /* red */
+}
+
+.edit-form.due-soon {
+  border-left-color: #f39c12; /* orange */
+}
+
+.edit-form.due-later {
+  border-left-color: #27ae60; /* green */
+}
+
+.edit-form.completed {
+  border-left-color: #888; /* grey, matches description color */
+}
+
 
 .edit-form .form-input,
 .edit-form textarea {

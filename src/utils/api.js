@@ -87,3 +87,24 @@ export const updateProfile = async (updates, id) => {
     body: JSON.stringify(updates),
   }, true);
 };
+
+export const sendMail = async (email)=>{
+  return apiCall('/api/users/sendmail',{
+    method: 'POST',
+    body: JSON.stringify({email}),
+  });
+}
+
+export const verifyOtp = async (data)=>{
+  return apiCall('/api/users/verifyotp',{
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export const updatePassword = async (email, currentPassword, newPassword)=>{
+  return apiCall('/api/users/forgotpassword',{
+    method: 'POST',
+    body: JSON.stringify({email, currentPassword, newPassword}),
+  });
+}

@@ -199,7 +199,7 @@ const TodoList = () => {
             todos.map((todo) => (
               <div key={todo.id} className={`todo-card ${getStatusClass(todo)}`}>
                 {editingTodo === todo.id ? (
-                  <div className="edit-form">
+                  <div className={`edit-form ${getStatusClass(todo)}`}>
                     <input
                       type="text"
                       className="form-input"
@@ -218,6 +218,7 @@ const TodoList = () => {
                       className="form-input"
                       value={editForm.dueDate}
                       onChange={(e) => setEditForm({ ...editForm, dueDate: e.target.value })}
+                      min={new Date().toISOString().split('T')[0]}
                     />
                     <div className="form-actions">
                       <button className="btn btn-success" onClick={() => handleUpdateTodo(todo.id)}>Save</button>

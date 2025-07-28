@@ -47,7 +47,7 @@ const Signup = () => {
           <img src="/todo_app_logo.png" alt="logo" className="app-logo" />
           <h1 className="app-name">ClearTick</h1>
         </div>
-        <img src="/login_img.png" alt="Signup Illustration" className="login-image" />
+        <img src="/login_arrow.png" alt="Signup Illustration" className="login-image" />
       </div>
 
       {/* Right section */}

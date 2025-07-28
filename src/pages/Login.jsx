@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { loginUser } from '../utils/api';
+import ForgotPassword from './ForgotPassword';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import '../styles/global.css';
 
@@ -11,7 +12,29 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [animateKey, setAnimateKey] = useState(0); // to restart animation
+
   const navigate = useNavigate();
+
+  // Slideshow images and slogans
+  const slides = [
+    { image: '/home_1.png', slogan: 'Organize your day, the ClearTick way!' },
+    { image: '/home_2.png', slogan: 'Every tick brings you closer to done.' },
+    { image: '/home_3.png', slogan: 'Plan smart. Tick fast. Live free.' }
+  ];
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlideIndex((prevIndex) => {
+        const newIndex = (prevIndex + 1) % slides.length;
+        setAnimateKey(Date.now());
+        return newIndex;
+      });
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [slides.length]);
 
   useEffect(() => {
     const authtoken = localStorage.getItem('authtoken');
@@ -49,7 +72,15 @@ const Login = () => {
           <img src="/todo_app_logo.png" alt="logo" className="app-logo" />
           <h1 className="app-name">ClearTick</h1>
         </div>
-        <img src="/login_img.png" alt="Login Illustration" className="login-image" />
+        <div className="slideshow">
+          <img
+            src={slides[currentSlideIndex].image}
+            alt="Login Illustration"
+            className="login-image"
+          />
+          {/* key prop ensures animation restarts */}
+          <p key={animateKey} className="slide-slogan">{slides[currentSlideIndex].slogan}</p>
+        </div>
       </div>
 
       {/* Right section */}
@@ -93,6 +124,17 @@ const Login = () => {
               </span>
             </div>
 
+            {/* Forgot Password Button */}
+            <div className="forgot-password-link">
+              <button
+                type="button"
+                className="btn-link"
+                onClick={() => setShowForgotModal(true)}
+              >
+                Forgot Password?
+              </button>
+            </div>
+
             <button
               type="submit"
               className="btn btn-login mb-4 btn-fullwidth"
@@ -108,6 +150,11 @@ const Login = () => {
           </p>
         </div>
       </div>
+
+      {/* Forgot Password Modal */}
+      {showForgotModal && (
+        <ForgotPassword onClose={() => setShowForgotModal(false)} />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getProfile, updateProfile } from '../utils/api';
+import { getProfile, updateProfile, updatePassword } from '../utils/api';
 import Header from '../components/Header';
 import '../styles/Profile.css';
 
@@ -9,6 +9,7 @@ const Profile = () => {
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showChangePassword, setShowChangePassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     firstName: '',
@@ -16,7 +17,13 @@ const Profile = () => {
     bio: ''
   });
 
-  const user = JSON.parse(localStorage.getItem('user'))
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+
+  const user = JSON.parse(localStorage.getItem('user'));
 
   useEffect(() => {
     fetchProfile();
@@ -42,11 +49,11 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
-      const data = await updateProfile(formData,user.id);
+      const data = await updateProfile(formData, user.id);
       setProfile(data);
-      localStorage.setItem('user', data ? JSON.stringify(data) : '')
+      localStorage.setItem('user', data ? JSON.stringify(data) : '');
       setEditing(false);
       setSuccess('Profile updated successfully!');
       setTimeout(() => setSuccess(''), 3000);
@@ -64,6 +71,26 @@ const Profile = () => {
       bio: profile.bio || ''
     });
     setEditing(false);
+  };
+
+  const handlePasswordChange = async (e) => {
+    e.preventDefault();
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setError("New passwords don't match");
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    try {
+      await updatePassword(user.email, passwordData.currentPassword, passwordData.newPassword);
+      setSuccess('Password updated successfully!');
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setShowChangePassword(false);
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 3000);
+    }
   };
 
   if (loading) {
@@ -87,8 +114,8 @@ const Profile = () => {
           <div className="profile-header">
             <h1>{`Hi, ${user.firstName}`}</h1>
             {!editing && (
-              <button 
-                className="btn btn-primary" 
+              <button
+                className="btn btn-primary"
                 onClick={() => setEditing(true)}
               >
                 Edit Profile
@@ -158,10 +185,10 @@ const Profile = () => {
 
                   <div className="form-actions">
                     <button type="submit" className="btn btn-success">
-                      Save Changes
+                      Save
                     </button>
-                    <button 
-                      type="button" 
+                    <button
+                      type="button"
                       className="btn btn-secondary"
                       onClick={handleCancel}
                     >
@@ -172,11 +199,10 @@ const Profile = () => {
               ) : (
                 <div className="profile-info">
                   <div className="info-section">
-                    <h2>{formData.firstName || formData.lastName 
+                    <h2>{formData.firstName || formData.lastName
                       ? `${formData.firstName} ${formData.lastName}`.trim()
                       : formData.username || 'No Name'
                     }</h2>
-                    {/* <p className="username">@{formData.username}</p> */}
                     <p className="email">{formData.email}</p>
                   </div>
 
@@ -199,6 +225,61 @@ const Profile = () => {
                         <span>{profile.modifiedAt ? new Date(profile.modifiedAt).toLocaleDateString() : 'Never'}</span>
                       </div>
                     </div>
+                  </div>
+
+                  <div className="change-password-section">
+                    <button
+                      className="btn btn-secondary"
+                      onClick={() => setShowChangePassword(!showChangePassword)}
+                    >
+                      {showChangePassword ? 'Cancel' : 'Change Password'}
+                    </button>
+
+                    {showChangePassword && (
+                      <form className="change-password-form" onSubmit={handlePasswordChange}>
+                        <div className="form-group">
+                          <label className="form-label">Current Password</label>
+                          <input
+                            type="password"
+                            className="form-input"
+                            value={passwordData.currentPassword}
+                            onChange={(e) =>
+                              setPasswordData({ ...passwordData, currentPassword: e.target.value })
+                            }
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">New Password</label>
+                          <input
+                            type="password"
+                            className="form-input"
+                            value={passwordData.newPassword}
+                            onChange={(e) =>
+                              setPasswordData({ ...passwordData, newPassword: e.target.value })
+                            }
+                            required
+                          />
+                        </div>
+                        <div className="form-group">
+                          <label className="form-label">Confirm New Password</label>
+                          <input
+                            type="password"
+                            className="form-input"
+                            value={passwordData.confirmPassword}
+                            onChange={(e) =>
+                              setPasswordData({ ...passwordData, confirmPassword: e.target.value })
+                            }
+                            required
+                          />
+                        </div>
+                        <div className="form-actions">
+                          <button type="submit" className="btn btn-success">
+                            Update Password
+                          </button>
+                        </div>
+                      </form>
+                    )}
                   </div>
                 </div>
               )}

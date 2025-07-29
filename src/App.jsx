@@ -7,6 +7,8 @@ import TodoList from "./pages/TodoList";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import './styles/global.css';
+import './utils/api';
+
 
 const queryClient = new QueryClient();
 

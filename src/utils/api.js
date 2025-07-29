@@ -1,11 +1,11 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL;
-console.log("API_BASE_URL:", API_BASE_URL);
+const rawApiUrl = import.meta.env.VITE_API_URL || "https://clearlist-server.onrender.com";
+console.log("[api.js] API_BASE_URL loaded:", rawApiUrl);
 
+export const API_BASE_URL = rawApiUrl;
 
-// Helper function to make API calls
 export const apiCall = async (endpoint, options = {}, isAuthenticate) => {
   const authtoken = localStorage.getItem('authtoken');
-  
+
   const defaultOptions = {
     headers: {
       'Content-Type': 'application/json',
@@ -23,7 +23,9 @@ export const apiCall = async (endpoint, options = {}, isAuthenticate) => {
   };
 
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, finalOptions);
+    const fullUrl = `${API_BASE_URL}${endpoint}`;
+    console.log("[apiCall] Calling:", fullUrl);
+    const response = await fetch(fullUrl, finalOptions);
     const data = await response.json();
 
     if (!response.ok) {

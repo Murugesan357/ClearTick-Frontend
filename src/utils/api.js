@@ -1,4 +1,6 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL;
+console.log("API_BASE_URL:", API_BASE_URL);
+
 
 // Helper function to make API calls
 export const apiCall = async (endpoint, options = {}, isAuthenticate) => {

@@ -12,9 +12,7 @@ const Header = () => {
     navigate('/login');
   };
 
-  if (!isAuthenticated) {
-    return null;
-  }
+  if (!isAuthenticated) return null;
 
   return (
     <header className="header">

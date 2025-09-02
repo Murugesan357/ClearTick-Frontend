@@ -1,5 +1,4 @@
 const rawApiUrl = import.meta.env.VITE_API_URL || "https://clearlist-server.onrender.com";
-console.log("[api.js] API_BASE_URL loaded:", rawApiUrl);
 
 export const API_BASE_URL = rawApiUrl;
 
@@ -24,7 +23,6 @@ export const apiCall = async (endpoint, options = {}, isAuthenticate) => {
 
   try {
     const fullUrl = `${API_BASE_URL}${endpoint}`;
-    console.log("[apiCall] Calling:", fullUrl);
     const response = await fetch(fullUrl, finalOptions);
     const data = await response.json();
 
@@ -60,7 +58,6 @@ export const getTodos = async (userId, sortBy) => {
 };
 
 export const createTodo = async (title, description = '', userId, dueDate) => {
-  console.log(dueDate)
   return apiCall('/api/todos', {
     method: 'POST',
     body: JSON.stringify({ title, description, userId, dueDate }),

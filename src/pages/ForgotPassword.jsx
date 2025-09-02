@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../styles/ForgotPassword.css';
 import { sendMail, verifyOtp, updatePassword } from '../utils/api';
 
@@ -63,6 +63,7 @@ const ForgotPassword = ({ onClose }) => {
         <h3>Forgot Password</h3>
         {status && <p className="status-text">{status}</p>}
 
+        {/* get email input step */}
         {step === 1 && (
           <>
             <input
@@ -79,6 +80,7 @@ const ForgotPassword = ({ onClose }) => {
           </>
         )}
 
+        {/* OTP entering window */}
         {step === 2 && (
           <>
             <input
@@ -95,6 +97,7 @@ const ForgotPassword = ({ onClose }) => {
           </>
         )}
 
+        {/* New password entering window */}
         {step === 3 && (
           <>
             <input

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { loginUser } from '../utils/api';
 import ForgotPassword from './ForgotPassword';
@@ -13,7 +13,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showForgotModal, setShowForgotModal] = useState(false);
-  const [animateKey, setAnimateKey] = useState(0); // to restart animation
+  const [animateKey, setAnimateKey] = useState(0);
 
   const navigate = useNavigate();
 

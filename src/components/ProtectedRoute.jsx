@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
@@ -11,9 +11,7 @@ const ProtectedRoute = ({ children }) => {
     }
   }, [authtoken, navigate]);
 
-  if (!authtoken) {
-    return null;
-  }
+  if (!authtoken) return null;
 
   return children;
 };
